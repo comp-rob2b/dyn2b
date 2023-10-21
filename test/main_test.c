@@ -4,6 +4,7 @@
 extern TCase *vector3_test();
 extern TCase *matrix_test();
 extern TCase *screw_test();
+extern TCase *mechanics_test();
 
 
 int main(int argc, char **argv)
@@ -12,6 +13,7 @@ int main(int argc, char **argv)
     suite_add_tcase(s, vector3_test());
     suite_add_tcase(s, matrix_test());
     suite_add_tcase(s, screw_test());
+    suite_add_tcase(s, mechanics_test());
 
     SRunner *sr = srunner_create(s);
 

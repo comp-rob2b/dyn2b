@@ -21,6 +21,7 @@ add_library(dyn2b SHARED
   vector3.c
   matrix.c
   screw.c
+  mechanics.c
 )
 
 target_include_directories(dyn2b

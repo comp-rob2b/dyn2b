@@ -5,6 +5,7 @@ add_executable(main_test
   vector3_test.c
   matrix_test.c
   screw_test.c
+  mechanics_test.c
 )
 
 target_link_libraries(main_test
