@@ -8,6 +8,7 @@ include(GNUInstallDirs)
 include(CMakeDependentOption)
 
 option(ENABLE_TESTS                         "Build unit tests" Off)
+option(ENABLE_DOC                           "Build documentation" Off)
 option(ENABLE_PACKAGE_REGISTRY              "Add this package to CMake's package registry" Off)
 cmake_dependent_option(ENABLE_TEST_COVERAGE "Generate a test coverage report" OFF "ENABLE_TESTS" OFF)
 
@@ -25,6 +26,23 @@ add_subdirectory(src)
 if(ENABLE_TESTS)
   enable_testing()
   add_subdirectory(test)
+endif()
+
+# Build the documentation
+if(ENABLE_DOC)
+  find_package(Doxygen REQUIRED)
+  find_package(Sphinx REQUIRED breathe)
+
+  set(DOXYGEN_GENERATE_HTML NO)
+  set(DOXYGEN_GENERATE_XML YES)
+  doxygen_add_docs(dyn2b_doxygen include)
+
+  sphinx_add_docs(
+    dyn2b_sphinx
+    BREATHE_PROJECTS dyn2b_doxygen
+    BUILDER html
+    SOURCE_DIRECTORY docs/sphinx/source
+  )
 endif()
 
 # Export this package to CMake's package registry
