@@ -17,6 +17,7 @@ find_library(MATH_LIBRARY m)
 
 add_library(dyn2b SHARED
   array.c
+  vector3.c
 )
 
 target_include_directories(dyn2b

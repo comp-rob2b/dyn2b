@@ -7,12 +7,19 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/thirdparty/cmake/sphinx)
 include(GNUInstallDirs)
 include(CMakeDependentOption)
 
+option(ENABLE_TESTS                         "Build unit tests" Off)
 option(ENABLE_PACKAGE_REGISTRY              "Add this package to CMake's package registry" Off)
 
 # The directory to which all CMake files (e.g. the configuration files) are installed
 set(CMAKE_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 add_subdirectory(src)
+
+# Build the test suite
+if(ENABLE_TESTS)
+  enable_testing()
+  add_subdirectory(test)
+endif()
 
 # Export this package to CMake's package registry
 if(ENABLE_PACKAGE_REGISTRY)
