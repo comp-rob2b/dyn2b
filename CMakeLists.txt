@@ -9,6 +9,12 @@ include(CMakeDependentOption)
 
 option(ENABLE_TESTS                         "Build unit tests" Off)
 option(ENABLE_PACKAGE_REGISTRY              "Add this package to CMake's package registry" Off)
+cmake_dependent_option(ENABLE_TEST_COVERAGE "Generate a test coverage report" OFF "ENABLE_TESTS" OFF)
+
+if(ENABLE_TEST_COVERAGE)
+  include(CodeCoverage)
+  append_coverage_compiler_flags()
+endif()
 
 # The directory to which all CMake files (e.g. the configuration files) are installed
 set(CMAKE_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
