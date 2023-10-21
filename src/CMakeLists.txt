@@ -13,11 +13,14 @@ if("${is_system_dir}" STREQUAL "-1")
   set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}")
 endif()
 
+find_package(cblas REQUIRED)
 find_library(MATH_LIBRARY m)
 
 add_library(dyn2b SHARED
   array.c
   vector3.c
+  matrix.c
+  screw.c
 )
 
 target_include_directories(dyn2b
@@ -28,6 +31,7 @@ target_include_directories(dyn2b
 
 target_link_libraries(dyn2b
   PRIVATE
+    cblas
     ${MATH_LIBRARY}
 )
 
