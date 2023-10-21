@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 19,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "add-warn",
+      "displayName": "Additional compiler warnings",
+      "description": "Build using Unix Makefiles (with additional compiler warnings)",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-Wall -Wextra -pedantic"
+      }
+    },
+    {
+      "name": "math-opt",
+      "displayName": "Optimized math",
+      "description": "Optimized math (AVX & auto-vectorization) using Unix Makefiles",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_C_FLAGS": "-mavx -mfma -ffast-math -ftree-vectorize -ftree-vectorizer-verbose=7 -fopt-info-vec-missed -fopt-info-loop-optimized -fopt-info-vec-all"
+      }
+    }
+  ]
+}
