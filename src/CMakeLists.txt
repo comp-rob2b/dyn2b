@@ -14,6 +14,7 @@ if("${is_system_dir}" STREQUAL "-1")
 endif()
 
 find_package(cblas REQUIRED)
+find_package(lapacke REQUIRED)
 find_library(MATH_LIBRARY m)
 
 add_library(dyn2b SHARED
@@ -22,6 +23,7 @@ add_library(dyn2b SHARED
   matrix.c
   screw.c
   mechanics.c
+  joint.c
 )
 
 target_include_directories(dyn2b
@@ -33,6 +35,7 @@ target_include_directories(dyn2b
 target_link_libraries(dyn2b
   PRIVATE
     cblas
+    lapacke
     ${MATH_LIBRARY}
 )
 
