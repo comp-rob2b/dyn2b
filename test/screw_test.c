@@ -146,6 +146,52 @@ START_TEST(test_cad_screw3)
 END_TEST
 
 
+START_TEST(test_rot_dist_screw3)
+{
+    double tf1[DYN2B_POSE3_SIZE] = {
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        2.0, 3.0, 4.0
+    };
+    double tf2[DYN2B_POSE3_SIZE] = {
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        1.0, 2.0, 3.0
+    };
+    double in[DYN2B_SCREW3_SIZE * N] = {    // direction-before-moment
+        1.0, 2.0, 3.0, 2.0, 3.0, 4.0,
+        1.0, 2.0, 3.0, 2.0, 3.0, 4.0
+    };
+    double out[DYN2B_SCREW3_SIZE * N];
+
+    double res1[DYN2B_SCREW3_SIZE * N] = {
+        1.0, 2.0, 3.0, 2.0, 3.0, 4.0,
+        1.0, 2.0, 3.0, 2.0, 3.0, 4.0
+    };
+    double res2[DYN2B_SCREW3_SIZE * N] = {
+        3.0, 1.0, 2.0, 4.0, 2.0, 3.0,
+        3.0, 1.0, 2.0, 4.0, 2.0, 3.0
+    };
+
+    dyn2b_rot_dist_screw3(N, tf1, in, out);
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < DYN2B_SCREW3_SIZE; j++) {
+            ck_assert_flt_eq(out[(i * N) + j], res1[(i * N) + j]);
+        }
+    }
+
+    dyn2b_rot_dist_screw3(N, tf2, in, out);
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < DYN2B_SCREW3_SIZE; j++) {
+            ck_assert_flt_eq(out[(i * N) + j], res2[(i * N) + j]);
+        }
+    }
+}
+END_TEST
+
+
 START_TEST(test_tf_dist_screw3)
 {
     double tf1[DYN2B_POSE3_SIZE] = {
@@ -183,6 +229,52 @@ START_TEST(test_tf_dist_screw3)
     }
 
     dyn2b_tf_dist_screw3(N, tf2, in, out);
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < DYN2B_SCREW3_SIZE; j++) {
+            ck_assert_flt_eq(out[(i * N) + j], res2[(i * N) + j]);
+        }
+    }
+}
+END_TEST
+
+
+START_TEST(test_rot_prox_screw3)
+{
+    double tf1[DYN2B_POSE3_SIZE] = {
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        2.0, 3.0, 4.0
+    };
+    double tf2[DYN2B_POSE3_SIZE] = {
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        1.0, 2.0, 3.0
+    };
+    double in[DYN2B_SCREW3_SIZE * N] = {    // direction-before-moment
+        1.0, 2.0, 3.0, 2.0, 3.0, 4.0,
+        1.0, 2.0, 3.0, 2.0, 3.0, 4.0
+    };
+    double out[DYN2B_SCREW3_SIZE * N];
+
+    double res1[DYN2B_SCREW3_SIZE * N] = {
+        1.0, 2.0, 3.0, 2.0, 3.0, 4.0,
+        1.0, 2.0, 3.0, 2.0, 3.0, 4.0
+    };
+    double res2[DYN2B_SCREW3_SIZE * N] = {
+        2.0, 3.0, 1.0, 3.0, 4.0, 2.0,
+        2.0, 3.0, 1.0, 3.0, 4.0, 2.0
+    };
+
+    dyn2b_rot_prox_screw3(N, tf1, in, out);
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < DYN2B_SCREW3_SIZE; j++) {
+            ck_assert_flt_eq(out[(i * N) + j], res1[(i * N) + j]);
+        }
+    }
+
+    dyn2b_rot_prox_screw3(N, tf2, in, out);
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < DYN2B_SCREW3_SIZE; j++) {
             ck_assert_flt_eq(out[(i * N) + j], res2[(i * N) + j]);
@@ -246,7 +338,9 @@ TCase *screw_test()
     tcase_add_test(tc, test_dot_screw3);
     tcase_add_test(tc, test_crs_screw3);
     tcase_add_test(tc, test_cad_screw3);
+    tcase_add_test(tc, test_rot_dist_screw3);
     tcase_add_test(tc, test_tf_dist_screw3);
+    tcase_add_test(tc, test_rot_prox_screw3);
     tcase_add_test(tc, test_tf_prox_screw3);
 
     return tc;

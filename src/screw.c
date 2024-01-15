@@ -157,6 +157,31 @@ void dyn2b_tf_dist_screw3(
 }
 
 
+void dyn2b_rot_dist_screw3(
+        int n,
+        const double *restrict x,
+        const double *restrict s_prox,
+        double *restrict s_dist)
+{
+    assert(n >= 1);
+    assert(x);
+    assert(s_prox);
+    assert(s_dist);
+
+    // dir_dist[i] = R^T * dir_prox[i]
+    cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, 3, n, 3,
+            1.0, &x[DYN2B_POSE3_ANG_OFFSET], DYN2B_POSE3_ANG_LD,
+            &s_prox[DYN2B_SCREW3_DIR_OFFSET], DYN2B_SCREW3_SIZE,
+            0.0, &s_dist[DYN2B_SCREW3_DIR_OFFSET], DYN2B_SCREW3_SIZE);
+
+    // mom_dist[i] = R^T * mom_prox[i]
+    cblas_dgemm(CblasColMajor, CblasTrans, CblasNoTrans, 3, n, 3,
+            1.0, &x[DYN2B_POSE3_ANG_OFFSET], DYN2B_POSE3_ANG_LD,
+            &s_prox[DYN2B_SCREW3_MOM_OFFSET], DYN2B_SCREW3_SIZE,
+            0.0, &s_dist[DYN2B_SCREW3_MOM_OFFSET], DYN2B_SCREW3_SIZE);
+}
+
+
 void dyn2b_tf_prox_screw3(
         int n,
         const double *restrict x,
@@ -184,4 +209,29 @@ void dyn2b_tf_prox_screw3(
             1.0, &x[DYN2B_POSE3_ANG_OFFSET], DYN2B_POSE3_ANG_LD,
             &s_dist[DYN2B_SCREW3_MOM_OFFSET], DYN2B_SCREW3_SIZE,
             1.0, &s_prox[DYN2B_SCREW3_MOM_OFFSET], DYN2B_SCREW3_SIZE);
+}
+
+
+void dyn2b_rot_prox_screw3(
+        int n,
+        const double *restrict x,
+        const double *restrict s_dist,
+        double *restrict s_prox)
+{
+    assert(n >= 1);
+    assert(x);
+    assert(s_dist);
+    assert(s_prox);
+
+    // dir_prox[i] = R * dir_dist[i]
+    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 3, n, 3,
+            1.0, &x[DYN2B_POSE3_ANG_OFFSET], DYN2B_POSE3_ANG_LD,
+            &s_dist[DYN2B_SCREW3_DIR_OFFSET], DYN2B_SCREW3_SIZE,
+            0.0, &s_prox[DYN2B_SCREW3_DIR_OFFSET], DYN2B_SCREW3_SIZE);
+
+    // mom_prox[i] = R * mom_dist[i]
+    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 3, n, 3,
+            1.0, &x[DYN2B_POSE3_ANG_OFFSET], DYN2B_POSE3_ANG_LD,
+            &s_dist[DYN2B_SCREW3_MOM_OFFSET], DYN2B_SCREW3_SIZE,
+            0.0, &s_prox[DYN2B_SCREW3_MOM_OFFSET], DYN2B_SCREW3_SIZE);
 }

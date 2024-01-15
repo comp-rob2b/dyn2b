@@ -10,6 +10,7 @@ extern "C" {
  * @file screw.h
  *
  * This file contains operations that involve 3D screws:
+ * - Rotations
  * - Transformations
  * - Screw dot product
  * - Screw cross product
@@ -199,6 +200,46 @@ void dyn2b_cad_screw3(
 
 
 /**
+ * Rotate a collection of 3D screws from an orientation's proximal frame to the
+ * orientation's distal frame.
+ *
+ * \f[
+ * {}^D\boldsymbol{s} = {}^P\boldsymbol{R}_D^{-1}~{}^P\boldsymbol{s}
+ * \f]
+ * 
+ * \f[
+ * \begin{pmatrix}
+ *   {}^D\boldsymbol{d} \\ {}^D\boldsymbol{m}
+ * \end{pmatrix}
+ * =
+ * \begin{pmatrix}
+ *   {}^P\boldsymbol{R}_D^T & \boldsymbol{0} \\
+ *   \boldsymbol{0} & {}^P\boldsymbol{R}_D^T
+ * \end{pmatrix}
+ * \begin{pmatrix}
+ *   {}^P\boldsymbol{d} \\ {}^P\boldsymbol{m}
+ * \end{pmatrix}
+ * \f]
+ *
+ * @param[in] n Number of screws to transform.
+ * @param[in] r The orientation \f${}^P\boldsymbol{R}_D\f$ of proximal frame
+ *              \f$\{P\}\f$ with respect to distal frame \f$\{D\}\f$.
+ *              Size: \f$[3 \times 3]\f$.
+ * @param[in] s_prox Screw \f${}^P\boldsymbol{s}\f$ as seen by proximal frame
+ *                   \f$\{P\}\f$.
+ *                   Size: \f$[6 \times n]\f$.
+ * @param[out] s_dist Screw \f${}^D\boldsymbol{s}\f$ as seen by distal frame
+ *                    \f$\{D\}\f$.
+ *                    Size: \f$[6 \times n]\f$.
+ */
+void dyn2b_rot_dist_screw3(
+        int n,
+        const double *restrict r,
+        const double *restrict s_prox,
+        double *restrict s_dist);
+
+
+/**
  * Transform a collection of 3D screws from a pose's proximal frame to the
  * pose's distal frame.
  *
@@ -238,6 +279,46 @@ void dyn2b_tf_dist_screw3(
         const double *restrict x,
         const double *restrict s_prox,
         double *restrict s_dist);
+
+
+/**
+ * Rotate a collection of 3D screws from an orientation's distal frame to the
+ * orientation's proximal frame.
+ *
+ * \f[
+ * {}^P\boldsymbol{s} = {}^P\boldsymbol{R}_D~{}^D\boldsymbol{s}
+ * \f]
+ *
+ * \f[
+ * \begin{pmatrix}
+ *   {}^P\boldsymbol{d} \\ {}^P\boldsymbol{m}
+ * \end{pmatrix}
+ * =
+ * \begin{pmatrix}
+ *   {}^P\boldsymbol{R}_D & \boldsymbol{0} \\
+ *   \boldsymbol{0}_D & {}^P\boldsymbol{R}_D
+ * \end{pmatrix}
+ * \begin{pmatrix}
+ *   {}^D\boldsymbol{d} \\ {}^D\boldsymbol{m}
+ * \end{pmatrix}
+ * \f]
+ *
+ * @param[in] n Number of screws to transform.
+ * @param[in] r The pose \f${}^P\boldsymbol{X}_D\f$ of proximal frame
+ *              \f$\{P\}\f$ with respect to distal frame \f$\{D\}\f$.
+ *              Size: \f$[3 \times 3 + 3 \times 1]\f$.
+ * @param[in] s_dist Screw \f${}^D\boldsymbol{s}\f$ as seen by distal frame
+ *                   \f$\{D\}\f$.
+ *                   Size: \f$[6 \times n]\f$.
+ * @param[out] s_prox Screw \f${}^P\boldsymbol{s}\f$ as seen by proximal frame
+ *                    \f$\{P\}\f$.
+ *                    Size: \f$[6 \times n]\f$.
+ */
+void dyn2b_rot_prox_screw3(
+        int n,
+        const double *restrict r,
+        const double *restrict s_dist,
+        double *restrict s_prox);
 
 
 /**
